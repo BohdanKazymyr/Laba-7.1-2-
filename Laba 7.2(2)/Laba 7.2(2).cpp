@@ -2,77 +2,75 @@
 #include <iomanip>
 #include <time.h>
 using namespace std;
-void CreateRow(int** a, const int rowNo, const int N, const int Low,
-	const int High, int colNo)
-{
-	a[rowNo][colNo] = Low + rand() % (High - Low + 1);
-	if (colNo < N - 1)
-		CreateRow(a, rowNo, N, Low, High, colNo + 1);
-}
-void CreateRows(int** a, const int N, const int Low, const int High, int rowNo)
-{
-	CreateRow(a, rowNo, N, Low, High, 0);
-	if (rowNo < N - 1)
-		CreateRows(a, N, Low, High, rowNo + 1);
-}
-void PrintRow(int** a, const int rowNo, const int N, int colNo)
-{
-	cout << setw(4) << a[rowNo][colNo];
-	if (colNo < N - 1)
-		PrintRow(a, rowNo, N, colNo + 1);
-	else
-		cout << endl;
-}
-void PrintRows(int** a, const int N, int rowNo)
-{
-	PrintRow(a, rowNo, N, 0);
-	if (rowNo < N - 1)
-		PrintRows(a, N, rowNo + 1);
-	else
-		cout << endl;
-}
-void SearchFirstEven(int** a, const int N, int i, int& minEven, int& k)
-{
-	if (a[i][N - 1 - i] % 2 == 0)
-	{
-		k = i;
-		minEven = a[i][N - 1 - i];
-	}
-	else
-		if (i < N - 1)
-			SearchFirstEven(a, N, i + 1, minEven, k);
-}
-void SearchMinEven(int** a, const int N, int i, int& minEven)
-{
-	if (a[i][N - 1 - i] % 2 == 0 && a[i][N - 1 - i] < minEven)
-		minEven = a[i][N - 1 - i];
-	if (i < N - 1)
-		SearchMinEven(a, N, i + 1, minEven);
-}
+void CreateRow(int** a, const int i, const int rowCount, const int Low,
+	const int High, int j);
+void CreateRows(int** a, const int colCount, const int Low, const int High, int i);
+void PrintRow(int** a, const int rowNo, const int rowCount, int colNo);
+void PrintRows(int** a, const int colCount, int rowNo);
+int Sum(int** a, const int n, const int k);
 int main()
 {
 	srand((unsigned)time(NULL));
-	int N;
-	cout << "N = "; cin >> N;
-	cout << endl;
-	int** a = new int* [N];
-	for (int i = 0; i < N; i++)
-		a[i] = new int[N];
-	int Low = -9, High = 9;
-	CreateRows(a, N, Low, High, 0);
-	PrintRows(a, N, 0);
-	int k = -1;
-	int minEven;
-	SearchFirstEven(a, N, 0, minEven, k);
-	if (k > -1)
-	{
-		SearchMinEven(a, N, k + 1, minEven);
-		cout << "minEven = " << minEven << endl;
-	}
-	else
-		cout << "there are no even elements" << endl;
-	for (int i = 0; i < N; i++)
+	int Low = -23;
+	int High = 26;
+	int n;
+	int k;
+	cout << "n = "; cin >> n;
+	cout << "k = "; cin >> k;
+	int** a = new int* [n];
+	for (int i = 0; i < n; i++)
+		a[i] = new int[k];
+	CreateRows(a, n, Low, High, 0);
+	PrintRows(a, n, 0);
+	cout << "Sum = " << Sum(a, n, k) << endl;
+	for (int i = 0; i < n; i++)
 		delete[] a[i];
 	delete[] a;
 	return 0;
+}
+void CreateRow(int** a, const int rowNo, const int rowCount, const int Low,
+	const int High, int colNo)
+{
+	a[rowNo][colNo] = Low + rand() % (High - Low + 1);
+	if (colNo < rowCount - 1)
+		CreateRow(a, rowNo, rowCount, Low, High, colNo + 1);
+}
+void CreateRows(int** a, const int colCount, const int Low, const int High, int rowNo)
+{
+	CreateRow(a, rowNo, colCount, Low, High, 0);
+	if (rowNo < colCount - 1)
+		CreateRows(a, colCount, Low, High, rowNo + 1);
+}
+void PrintRow(int** a, const int rowNo, const int rowCount, int colNo)
+{
+	cout << setw(4) << a[rowNo][colNo];
+	if (colNo < rowCount - 1)
+		PrintRow(a, rowNo, rowCount, colNo + 1);
+	else
+		cout << endl;
+}
+void PrintRows(int** a, const int colCount, int rowNo)
+{
+	PrintRow(a, rowNo, colCount, 0);
+	if (rowNo < colCount - 1)
+		PrintRows(a, colCount, rowNo + 1);
+	else
+		cout << endl;
+}
+int Sum(int** a, const int n, const int k)
+{
+	int max = -23;
+	int sum = 0;
+	for (int j = 0; j < k; j += 2)
+	{
+		for (int i = 0; i < n; i++)
+		{
+
+			if (a[i][j] >= max)
+				max = a[i][j];
+
+		}
+		sum += max;
+	}
+	return sum;
 }
